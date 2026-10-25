@@ -21,14 +21,23 @@ button:disabled{opacity:.4;cursor:not-allowed}
 .seats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .seat{background:#0c0c0c;border:1px dashed #66542b;border-radius:12px;padding:12px;min-height:88px}
 .seat strong{color:var(--gold)}.seat small{display:block;color:var(--muted);margin-top:6px}
-.cards{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-.card{width:62px;height:90px;border-radius:8px;background:#f7f1e3;color:#171717;display:flex;flex-direction:column;justify-content:space-between;padding:7px;font-weight:800;box-shadow:0 3px 9px #0008}
-.card .suit{font-size:25px;text-align:center;align-self:center}.card .suitname{font-size:9px;text-align:center;letter-spacing:.4px;text-transform:uppercase}.gold{color:#a87408}.red{color:#b52d2d}.green{color:#287044}.black{color:#222}
+.cards{display:flex;gap:9px;flex-wrap:wrap;align-items:flex-start;margin:16px 0}
+.card{width:clamp(72px,19vw,104px);height:clamp(116px,31vw,160px);border:2px solid #e7d7b4;border-radius:10px;background:linear-gradient(145deg,#fffaf0,#eee2c8);color:#171717;display:flex;flex-direction:column;justify-content:space-between;padding:9px;font-weight:800;box-shadow:0 5px 12px #0009;overflow:hidden}
+.card{position:relative;width:clamp(72px,21vw,112px);height:clamp(126px,36vw,170px);border:2px solid #d6bd80;border-radius:11px;background:linear-gradient(145deg,#fffdf5,#f0e4c7);color:#211b12;display:flex;flex-direction:column;justify-content:space-between;padding:8px;box-shadow:0 5px 12px #0009;overflow:hidden}.card .rank{font-size:clamp(17px,4.8vw,25px);font-weight:900;line-height:1}.card .suit{font-size:clamp(35px,10vw,52px);text-align:center;align-self:center;line-height:1.1;filter:drop-shadow(0 2px 1px #0002)}.card .suitname{font-size:clamp(9px,2.5vw,12px);text-align:center;letter-spacing:1.4px;text-transform:uppercase;font-weight:900}.gold{color:#a87408}.red{color:#b52d2d}.green{color:#287044}.black{color:#222}.card:after{content:"";position:absolute;inset:4px;border:1px solid #d6bd8055;border-radius:7px;pointer-events:none}
+.peel-card{position:relative;width:clamp(72px,21vw,112px);height:clamp(126px,36vw,170px);touch-action:none;user-select:none;flex:0 0 auto;perspective:700px}
+.face-card,.back-cover{position:absolute;inset:0;border-radius:11px;overflow:hidden}
+.face-card{border:2px solid #d6bd80;background:linear-gradient(145deg,#fffdf5,#f0e4c7);color:#211b12;display:flex;flex-direction:column;justify-content:space-between;padding:8px;box-shadow:0 5px 12px #0009;font-weight:900}
+.face-card .rank{font-size:clamp(17px,4.8vw,25px);line-height:1}.face-card .art{font-size:clamp(30px,9vw,48px);text-align:center;line-height:1.1;flex:1;display:grid;place-items:center}.face-card .suitname{font-size:clamp(8px,2.4vw,11px);text-align:center;letter-spacing:1px}
+.back-cover{z-index:2;background:repeating-linear-gradient(45deg,#7b171c 0 5px,#f1dfbb 5px 7px,#7b171c 7px 12px);border:3px solid #ead9b5;box-shadow:0 5px 12px #0009;transform-origin:top center;cursor:ns-resize}
+.back-cover:before{content:'BOJO 46';position:absolute;inset:8px;border:2px solid #edcc70;border-radius:5px;display:grid;place-items:center;color:#f7df9a;font-weight:1000;font-size:12px;text-shadow:0 2px 3px #000}
+.peel-label{font-size:11px;color:#bdb39b;text-align:center;margin-top:4px;line-height:1.2}
+.peel-card.revealed .back-cover{display:none}
+@media(max-width:380px){.peel-card{width:calc((100vw - 82px)/4);height:120px}.face-card{padding:6px}.face-card .art{font-size:29px}.face-card .rank{font-size:16px}.face-card .suitname{font-size:8px}}
 .pill{display:inline-block;padding:5px 9px;border-radius:99px;background:#292111;color:#f0cd70;border:1px solid #5d4820;font-size:12px}
 .notice{color:var(--muted);font-size:13px;line-height:1.5}
 .log{max-height:170px;overflow:auto;color:#d7cfba;font-size:13px;line-height:1.7}
 footer{text-align:center;color:#807762;font-size:12px;padding:10px 20px 28px}
-@media(min-width:760px){main{grid-template-columns:1fr 1fr}.wide{grid-column:1/-1}.seats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:380px){.cards{gap:6px}.card{width:calc((100vw - 82px)/4);height:120px;padding:6px}.card .suit{font-size:29px}.card .suitname{font-size:8px}.card .rank{font-size:16px}}\n@media(min-width:760px){main{grid-template-columns:1fr 1fr}.wide{grid-column:1/-1}.seats{grid-template-columns:repeat(3,minmax(0,1fr))}}
 </style></head>
 <body>
 <header><h1>🃏 BOJO 46 TIO CUCHO 🃏</h1><div class="subtitle">TRUCO · ESTRATEGIA · MESA ENTRE AMIGOS</div></header>
@@ -49,7 +58,7 @@ footer{text-align:center;color:#807762;font-size:12px;padding:10px 20px 28px}
 </section>
 <section class="panel">
 <h2>🎴 Mano de demostración</h2>
-<p class="notice">Elegí “Repartir demo” para probar cartas de muestra. Esta función no valida todavía todas las reglas oficiales ni sincroniza jugadores.</p>
+<p class="notice">Elegí “Repartir demo” para probar la baraja española. Las cartas muestran solo su figura y palo; los valores se usan internamente para los cálculos.</p>
 <div class="row"><button id="deal">Repartir demo</button><button class="secondary" id="clearHand">Ocultar cartas</button></div>
 <div id="hand" class="cards"></div><div id="score" class="notice">Tus cartas aparecerán aquí.</div>
 </section>
@@ -70,7 +79,9 @@ function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','
 document.querySelector('#join').onclick=()=>{let name=document.querySelector('#nickname').value.trim();let role=document.querySelector('#role').value;if(!name){alert('Escribí tu apodo.');return}if(role==='player'&&players.filter(p=>p.role==='player').length>=6){alert('La mesa admite hasta 6 jugadores.');return}if(players.some(p=>p.name.toLowerCase()===name.toLowerCase())){alert('Ese apodo ya está en uso en esta demostración.');return}players.push({name,role});render();log(`${escapeHtml(name)} entró como ${role==='player'?'jugador':'espectador'} (solo en este dispositivo).`);document.querySelector('#nickname').value=''}
 const suits=[['🪙','Oros','gold'],['🏆','Copas','red'],['⚔️','Espadas','black'],['🪵','Bastos','green']];
 const ranks=[['As',11],['2',12],['3',10],['4',10],['5',10],['6',10],['7',7],['Sota',10],['Caballo',11],['Rey',12]];
-document.querySelector('#deal').onclick=()=>{let deck=[];for(let [suit,suitName,color] of suits)for(let [rank,val] of ranks)deck.push({suit,suitName,color,rank,val});deck.sort(()=>Math.random()-.5);hand=deck.slice(0,4);handEl.innerHTML=hand.map(c=>`<div class="card ${c.color}"><span>${c.rank}</span><span class="suit">${c.suit}</span><span class="suitname">${c.suitName}</span><span>${c.val} pts</span></div>`).join('');let sums={};hand.forEach(c=>sums[c.suit]=(sums[c.suit]||0)+c.val);let best=Math.max(...Object.values(sums));document.querySelector('#score').textContent=`Mejor suma por palo: ${best} puntos. Esta muestra usa valores base; el 7 cambia a 10 en una mesa de 6 jugadores.`;log('Se repartieron cuatro cartas de muestra.');}
+function cardMarkup(c,i){return `<div class="peel-card" data-index="${i}" aria-label="Carta ${i+1}, boca abajo"><div class="face-card ${c.color}"><span class="rank">${c.rank}</span><span class="art">${c.suit}</span><span class="suitname">${c.suitName}</span></div><div class="back-cover" data-progress="0"></div><div class="peel-label">Deslizá para pelar</div></div>`}
+function wirePeelCards(){handEl.querySelectorAll('.peel-card').forEach(card=>{const cover=card.querySelector('.back-cover');let startY=0,startProgress=0,dragging=false;const setProgress=v=>{v=Math.max(0,Math.min(100,v));cover.style.transform=`translateY(${v}%)`;cover.dataset.progress=v;if(v>=98){card.classList.add('revealed');card.setAttribute('aria-label','Carta descubierta')}else{card.classList.remove('revealed');card.setAttribute('aria-label','Carta boca abajo')}};cover.addEventListener('pointerdown',e=>{if(card.classList.contains('revealed'))return;dragging=true;startY=e.clientY;startProgress=Number(cover.dataset.progress||0);cover.setPointerCapture(e.pointerId);e.preventDefault()});cover.addEventListener('pointermove',e=>{if(!dragging)return;const delta=(e.clientY-startY)/card.clientHeight*100;setProgress(startProgress+delta)});const end=()=>{if(!dragging)return;dragging=false;if(Number(cover.dataset.progress||0)>=72)setProgress(100)};cover.addEventListener('pointerup',end);cover.addEventListener('pointercancel',end);cover.addEventListener('click',()=>{if(Number(cover.dataset.progress||0)>0)setProgress(100);else setProgress(35)})})}
+document.querySelector('#deal').onclick=()=>{let deck=[];for(let [suit,suitName,color] of suits)for(let [rank,val] of ranks)deck.push({suit,suitName,color,rank,val});deck.sort(()=>Math.random()-.5);hand=deck.slice(0,4);handEl.innerHTML=hand.map(cardMarkup).join('');wirePeelCards();document.querySelector('#score').textContent='Tus cuatro cartas están boca abajo. Pelá cada una cuando quieras; no se muestran los puntos.';log('Se repartieron cuatro cartas boca abajo para pelar por la oreja.');}
 document.querySelector('#clearHand').onclick=()=>{hand=[];handEl.innerHTML='';document.querySelector('#score').textContent='Tus cartas aparecerán aquí.'}
 render();
 </script></body></html>
