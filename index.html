@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#090909">
+<title>BOJO 46 TIO CUCHO</title>
+<style>
+:root{--gold:#e8bd55;--red:#b52d2d;--bg:#090909;--panel:#151515;--muted:#b7b1a2}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#292012 0,#090909 55%);color:#f6f0df;font-family:system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{text-align:center;padding:28px 16px 18px;border-bottom:1px solid #5d4820;background:#080808dd}
+h1{margin:0;color:var(--gold);font-size:clamp(25px,5vw,42px);letter-spacing:2px;text-shadow:0 2px #5e210d}
+.subtitle{color:#ddd0ad;margin-top:7px;font-size:13px;letter-spacing:2px}
+main{max-width:1050px;margin:auto;padding:18px;display:grid;gap:16px}
+.panel{background:linear-gradient(145deg,#1b1b1b,#101010);border:1px solid #51401f;border-radius:16px;padding:16px;box-shadow:0 12px 30px #0008}
+h2{font-size:17px;color:var(--gold);margin:0 0 12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input,select{background:#080808;border:1px solid #66542b;color:white;border-radius:9px;padding:12px;min-width:0;flex:1}
+button{background:linear-gradient(#f0cf79,#c39331);border:0;color:#171006;font-weight:800;border-radius:9px;padding:12px 15px;cursor:pointer}
+button.secondary{background:#252525;color:#f5e8c4;border:1px solid #65542c}button.danger{background:#6e2020;color:#fff}
+button:disabled{opacity:.4;cursor:not-allowed}
+.seats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.seat{background:#0c0c0c;border:1px dashed #66542b;border-radius:12px;padding:12px;min-height:88px}
+.seat strong{color:var(--gold)}.seat small{display:block;color:var(--muted);margin-top:6px}
+.cards{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.card{width:62px;height:90px;border-radius:8px;background:#f7f1e3;color:#171717;display:flex;flex-direction:column;justify-content:space-between;padding:7px;font-weight:800;box-shadow:0 3px 9px #0008}
+.card .suit{font-size:27px;text-align:center;align-self:center}.red{color:#b52d2d}
+.pill{display:inline-block;padding:5px 9px;border-radius:99px;background:#292111;color:#f0cd70;border:1px solid #5d4820;font-size:12px}
+.notice{color:var(--muted);font-size:13px;line-height:1.5}
+.log{max-height:170px;overflow:auto;color:#d7cfba;font-size:13px;line-height:1.7}
+footer{text-align:center;color:#807762;font-size:12px;padding:10px 20px 28px}
+@media(min-width:760px){main{grid-template-columns:1fr 1fr}.wide{grid-column:1/-1}.seats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style></head>
+<body>
+<header><h1>♠ BOJO 46 TIO CUCHO ♥</h1><div class="subtitle">TRUCO · ESTRATEGIA · MESA ENTRE AMIGOS</div></header>
+<main>
+<section class="panel">
+<h2>👑 Entrada a la mesa</h2>
+<div class="row"><input id="nickname" maxlength="22" placeholder="Tu apodo visible"><select id="role"><option value="player">Quiero jugar</option><option value="spectator">Quiero mirar</option></select><button id="join">Entrar</button></div>
+<p class="notice">La versión inicial es una maqueta local para probar la interfaz. Todavía no comparte una mesa real entre teléfonos ni gestiona dinero real.</p>
+<div class="row"><span class="pill">2–6 jugadores</span><span class="pill">Baraja española de 40</span><span class="pill">Meta: 46</span></div>
+</section>
+<section class="panel">
+<h2>🪙 Estado de la mesa</h2>
+<div class="row"><div><small class="notice">Jugadores</small><div id="playerCount" style="font-size:25px;color:var(--gold);font-weight:800">0 / 6</div></div><div><small class="notice">Pozo de demostración</small><div style="font-size:25px;color:var(--gold);font-weight:800">Gs. 0</div></div></div>
+<p class="notice">No se procesan pagos ni se acreditan fichas reales en esta versión.</p>
+</section>
+<section class="panel wide">
+<h2>🃏 Asientos</h2><div class="seats" id="seats"></div>
+</section>
+<section class="panel">
+<h2>🎴 Mano de demostración</h2>
+<p class="notice">Elegí “Repartir demo” para probar cartas de muestra. Esta función no valida todavía todas las reglas oficiales ni sincroniza jugadores.</p>
+<div class="row"><button id="deal">Repartir demo</button><button class="secondary" id="clearHand">Ocultar cartas</button></div>
+<div id="hand" class="cards"></div><div id="score" class="notice">Tus cartas aparecerán aquí.</div>
+</section>
+<section class="panel">
+<h2>📜 Actividad local</h2><div id="log" class="log">La mesa de demostración está lista.</div>
+</section>
+<section class="panel wide">
+<h2>⚙️ Próximas integraciones</h2>
+<p class="notice">Servidor compartido y base de datos · autenticación real · reglas completas de apuestas y pozos laterales · audio y chat en vivo · enlaces separados para jugadores y espectadores · panel privado de Tío Cucho · alojamiento público.</p>
+</section>
+</main><footer>BOJO 46 TIO CUCHO · Prototipo inicial · No usar para apuestas reales</footer>
+<script>
+const seatsEl=document.querySelector('#seats'), logEl=document.querySelector('#log'), handEl=document.querySelector('#hand');
+let players=[],hand=[];
+function log(s){logEl.innerHTML=`• ${s}<br>`+logEl.innerHTML}
+function render(){seatsEl.innerHTML='';for(let i=0;i<6;i++){let p=players[i];let d=document.createElement('div');d.className='seat';d.innerHTML=p?`<strong>${i+1}. ${escapeHtml(p.name)}</strong><small>${p.role==='spectator'?'Espectador':'Jugador · Demo local'}</small>`:`<strong>Asiento ${i+1}</strong><small>Disponible</small>`;seatsEl.append(d)}document.querySelector('#playerCount').textContent=players.filter(p=>p.role==='player').length+' / 6'}
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+document.querySelector('#join').onclick=()=>{let name=document.querySelector('#nickname').value.trim();let role=document.querySelector('#role').value;if(!name){alert('Escribí tu apodo.');return}if(role==='player'&&players.filter(p=>p.role==='player').length>=6){alert('La mesa admite hasta 6 jugadores.');return}if(players.some(p=>p.name.toLowerCase()===name.toLowerCase())){alert('Ese apodo ya está en uso en esta demostración.');return}players.push({name,role});render();log(`${escapeHtml(name)} entró como ${role==='player'?'jugador':'espectador'} (solo en este dispositivo).`);document.querySelector('#nickname').value=''}
+const suits=[['♠','black'],['♥','red'],['♦','red'],['♣','black']];
+const ranks=[['As',11],['2',12],['3',10],['4',10],['5',10],['6',10],['7',7],['Sota',10],['Caballo',11],['Rey',12]];
+document.querySelector('#deal').onclick=()=>{let deck=[];for(let [suit,color] of suits)for(let [rank,val] of ranks)deck.push({suit,color,rank,val});deck.sort(()=>Math.random()-.5);hand=deck.slice(0,4);handEl.innerHTML=hand.map(c=>`<div class="card ${c.color==='red'?'red':''}"><span>${c.rank}</span><span class="suit">${c.suit}</span><span>${c.val} pts</span></div>`).join('');let sums={};hand.forEach(c=>sums[c.suit]=(sums[c.suit]||0)+c.val);let best=Math.max(...Object.values(sums));document.querySelector('#score').textContent=`Mejor suma por palo: ${best} puntos. Esta muestra usa valores base; el 7 cambia a 10 en una mesa de 6 jugadores.`;log('Se repartieron cuatro cartas de muestra.');}
+document.querySelector('#clearHand').onclick=()=>{hand=[];handEl.innerHTML='';document.querySelector('#score').textContent='Tus cartas aparecerán aquí.'}
+render();
+</script></body></html>
